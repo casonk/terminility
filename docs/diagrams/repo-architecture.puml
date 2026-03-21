@@ -1,0 +1,98 @@
+@startuml
+
+title terminility Repository Architecture (Contributor Blueprint)
+left to right direction
+!pragma layout elk
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam linetype ortho
+skinparam ArrowColor #2F4F4F
+skinparam ArrowThickness 2
+skinparam ArrowFontSize 12
+skinparam titleFontSize 28
+skinparam packageStyle rectangle
+skinparam packageFontSize 18
+skinparam packageFontStyle bold
+skinparam rectangleFontSize 12
+skinparam rectangleFontName Arial
+skinparam DefaultTextAlignment left
+skinparam LegendFontSize 13
+
+package "Layer Stack" as LAYER_PANEL #F5F5F5 {
+  rectangle "1) Installation Layer\n- install.sh\n- detects package manager (apt/dnf/pacman/brew/zypper)\n- installs tmux, clones/updates TPM\n- backs up existing ~/.tmux.conf\n- runs TPM headlessly to install plugins\n- invokes sessions.sh\n- wires alias source guard into ~/.bashrc / ~/.zshrc" as L_INSTALL #D5E8D4
+
+  rectangle "2) Configuration Layer\n- tmux.conf  →  ~/.tmux.conf\n- 256-color + true-color, mouse, 50k history, base-index 1\n- intuitive split/nav bindings + reload key (prefix+r)\n- TPM plugins: tmux-sensible, tmux-resurrect, tmux-continuum\n- auto-save every 15 min, auto-restore on server start" as L_CONFIG #D5E8D4
+
+  rectangle "3) Session Management Layer\n- sessions.sh\n- scans GIT_BASE (default: /mnt/4tb-m2/git) for .git dirs\n- derives tmux-safe session name (/ → -, spaces/dots → -)\n- creates sessions idempotently (skips existing)\n- ensures tmux server is running before creation" as L_SESSION #D5E8D4
+
+  rectangle "4) Alias Layer\n- writes ~/.terminility_aliases (regenerated atomically each run)\n- one alias per session: tmux new-session -A -s <name> -c <path>\n  (-A: attach or create; -c: start in repo root)\n- install.sh adds source guard to shell RCs (idempotent)" as L_ALIAS #D5E8D4
+}
+
+package "Source Files (tracked)" as SOURCE_PANEL #F5F5F5 {
+  rectangle "install.sh\nFull install orchestrator" as F_INSTALL #DAE8FC
+  rectangle "sessions.sh\nRepo scanner + session creator\n+ alias generator" as F_SESSIONS #DAE8FC
+  rectangle "tmux.conf\nTmux configuration source" as F_CONF #DAE8FC
+  rectangle "docs/\ncontributor-architecture-blueprint.md\ndiagrams/repo-architecture.puml" as F_DOCS #DAE8FC
+}
+
+package "Runtime Artifacts (untracked)" as RUNTIME_PANEL #F5F5F5 {
+  folder "~/.tmux.conf\ndeployed config" as RT_CONF #FFE6CC
+  folder "~/.tmux/plugins/tpm/\nTPM clone" as RT_TPM #FFE6CC
+  folder "~/.tmux/plugins/tmux-resurrect/\n~/.tmux/plugins/tmux-continuum/\nplugin installs" as RT_PLUGINS #FFE6CC
+  folder "~/.tmux/resurrect/\nsession save files" as RT_SAVES #FFE6CC
+  folder "~/.terminility_aliases\ngenerated alias file" as RT_ALIASES #FFE6CC
+  folder "~/.bash_aliases / ~/.zshrc\nshell RC files (source guard added)" as RT_RC #FFE6CC
+}
+
+package "External Inputs" as EXT_PANEL #F5F5F5 {
+  rectangle "/mnt/4tb-m2/git/**/.git\ngit repositories on disk\n(GIT_BASE, overridable via env)" as EXT_GIT #FFF2CC
+  rectangle "System package manager\napt / dnf / pacman / brew / zypper\n(auto-detected)" as EXT_PKG #FFF2CC
+  rectangle "GitHub (TPM + plugins)\ntmux-plugins/tpm\ntmux-plugins/tmux-resurrect\ntmux-plugins/tmux-continuum" as EXT_GH #FFF2CC
+}
+
+' Layer progression
+L_INSTALL -down-> L_CONFIG
+L_CONFIG -down-> L_SESSION
+L_SESSION -down-> L_ALIAS
+
+' Source → Layer mapping
+F_INSTALL ..right..> L_INSTALL
+F_SESSIONS ..right..> L_SESSION
+F_CONF ..right..> L_CONFIG
+
+' External inputs → layers
+EXT_PKG -right-> L_INSTALL : installs tmux
+EXT_GH -right-> L_INSTALL : clones TPM + plugins
+EXT_GIT -right-> L_SESSION : scanned for repos
+
+' Layer → runtime artifacts
+L_INSTALL -right-> RT_CONF : deploys
+L_INSTALL -right-> RT_TPM : clones
+L_INSTALL -right-> RT_PLUGINS : installs headlessly
+L_CONFIG -right-> RT_CONF : source
+L_SESSION -right-> RT_SAVES : sessions use resurrect dir
+L_ALIAS -right-> RT_ALIASES : generates
+L_ALIAS -right-> RT_RC : wires source guard
+
+legend right
+  == Data Flow ==
+  /mnt/4tb-m2/git/**/.git
+    → sessions.sh
+    → tmux sessions (idempotent)
+    → ~/.terminility_aliases
+    → ~/.bash_aliases / ~/.zshrc
+    → aliases active in every new shell
+
+  == Key Entry Points ==
+  bash install.sh          — full install
+  bash sessions.sh         — rescan + refresh aliases
+  source ~/.terminility_aliases  — activate now
+  <alias>                  — attach to repo session
+
+  == Environment Overrides ==
+  TERMINILITY_GIT_BASE     — override scan root
+  TERMINILITY_ALIAS_FILE   — override alias output path
+endlegend
+
+@enduml

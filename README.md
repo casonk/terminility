@@ -17,6 +17,11 @@
 - **Scans all git repos** under your configured base directory and creates a dedicated tmux session for each one
 - **Generates shell aliases** — type the session name to instantly jump into it
 
+## Architecture
+
+- Contributor architecture blueprint: [`docs/contributor-architecture-blueprint.md`](docs/contributor-architecture-blueprint.md)
+- PlantUML diagram source: [`docs/diagrams/repo-architecture.puml`](docs/diagrams/repo-architecture.puml)
+
 ## Requirements
 
 | Tool | Notes |
