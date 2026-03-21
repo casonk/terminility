@@ -2,9 +2,11 @@
 # terminility/install.sh — Install and configure tmux with session resume
 set -euo pipefail
 
-TMUX_CONF_SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/tmux.conf"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TMUX_CONF_SRC="$REPO_DIR/tmux.conf"
 TMUX_CONF_DEST="$HOME/.tmux.conf"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
+ALIAS_FILE="${TERMINILITY_ALIAS_FILE:-$HOME/.terminility_aliases}"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 info()    { echo -e "${CYAN}[terminility]${NC} $*"; }
@@ -89,6 +91,33 @@ reload_tmux() {
     fi
 }
 
+# ─── Wire alias file into shell RC files ──────────────────────────────────────
+wire_aliases() {
+    local source_line="[[ -f $ALIAS_FILE ]] && source $ALIAS_FILE"
+    local wired=0
+    for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
+        [[ -f "$rc" ]] || continue
+        if grep -qF "$ALIAS_FILE" "$rc"; then
+            info "Aliases already wired into $rc"
+        else
+            echo "" >> "$rc"
+            echo "# terminility — git repo session aliases" >> "$rc"
+            echo "$source_line" >> "$rc"
+            success "Wired alias loader into $rc"
+            wired=1
+        fi
+    done
+    if [[ $wired -eq 0 ]]; then
+        info "No changes needed to shell RC files."
+    fi
+}
+
+# ─── Create git repo sessions and generate aliases ────────────────────────────
+setup_sessions() {
+    info "Scanning git repos and creating tmux sessions..."
+    bash "$REPO_DIR/sessions.sh"
+}
+
 # ─── Main ─────────────────────────────────────────────────────────────────────
 main() {
     echo ""
@@ -102,17 +131,23 @@ main() {
     install_config
     install_plugins
     reload_tmux
+    setup_sessions
+    wire_aliases
 
     echo ""
     success "All done! tmux is configured with auto-save (every 15 min) and auto-restore."
     echo ""
     echo -e "  ${CYAN}Quick reference:${NC}"
     echo "    tmux                    — start or attach to a session"
+    echo "    <session-alias>         — attach to a git repo session (e.g. util-repos-terminility)"
+    echo "    bash sessions.sh        — rescan repos and refresh sessions/aliases"
     echo "    prefix + Ctrl+s         — manually save session"
     echo "    prefix + Ctrl+r         — manually restore session"
     echo "    prefix + r              — reload config"
     echo "    prefix + |              — split horizontally"
     echo "    prefix + -              — split vertically"
+    echo ""
+    echo -e "  ${YELLOW}Note:${NC} Open a new shell (or run: source $ALIAS_FILE) to activate aliases."
     echo ""
 }
 
