@@ -1,0 +1,5 @@
+# Bootstrap tools (downloaded by setup.sh, not committed)
+tools/
+
+# Shell artifacts
+*.bak.*

@@ -20,15 +20,28 @@
 ## Architecture
 
 - Contributor architecture blueprint: [`docs/contributor-architecture-blueprint.md`](docs/contributor-architecture-blueprint.md)
-- PlantUML diagram source: [`docs/diagrams/repo-architecture.puml`](docs/diagrams/repo-architecture.puml)
+- PlantUML source + renders: [`docs/diagrams/repo-architecture.puml`](docs/diagrams/repo-architecture.puml)
+- draw.io source + renders: [`docs/diagrams/repo-architecture.drawio`](docs/diagrams/repo-architecture.drawio)
+
+**Re-render diagrams** (after editing `.puml` or `.drawio`):
+```bash
+bash setup.sh
+```
+
+## Setup (diagram tools)
+
+`setup.sh` downloads PlantUML and draw.io desktop and renders all diagrams in `docs/diagrams/`. It mirrors the same tool-bootstrap pattern as personal-finance.
+
+```bash
+bash setup.sh            # download tools + render all diagrams
+bash setup.sh --skip-drawio   # PlantUML only
+```
+
+Requires: `java` (JRE 11+), `curl`, x86_64 (for draw.io AppImage), and an X display (`$DISPLAY`).
+
+Tools are downloaded into `tools/` (gitignored).
 
 ## Requirements
-
-| Tool | Notes |
-|------|-------|
-| `git` | Required to clone TPM and plugins |
-| `bash` | Version 4+ |
-| One of: `apt`, `dnf`, `pacman`, `brew`, `zypper` | For installing tmux |
 
 ## Install
 
