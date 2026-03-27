@@ -58,7 +58,7 @@ bash install.sh
 | Shortcut / Command | Action |
 |----------|--------|
 | `<session-name>` | Attach to a git repo session (e.g. `util-repos-terminility`) |
-| `bash sessions.sh` | Rescan repos, create new sessions, refresh aliases |
+| `bash sessions.sh` | Rescan repos, reconcile moved/deleted sessions, refresh aliases |
 | `prefix + Ctrl+s` | Manually save session |
 | `prefix + Ctrl+r` | Manually restore session |
 | `prefix + r` | Reload config |
@@ -71,7 +71,7 @@ bash install.sh
 
 ## Git Repo Sessions
 
-`sessions.sh` scans a base directory for git repositories and creates a dedicated tmux session for each one. Sessions are **idempotent** — already-existing sessions are never recreated or interrupted.
+`sessions.sh` scans a base directory for git repositories and creates a dedicated tmux session for each one. On every run it also reconciles previously managed sessions: moved repos are recreated at their new path, and sessions for repos that disappeared from the same managed `GIT_BASE` are removed.
 
 **Session naming:** path segments are joined with `-` (e.g. `research-repos-citegres`).
 
@@ -81,7 +81,9 @@ tmux new-session -A -s <session-name> -c <repo-path>
 ```
 This attaches to an existing session or creates a fresh one, always starting in the repo directory.
 
-**To rescan after adding new repos:**
+`sessions.sh` also writes `~/.terminility_session_paths`, which is used to track previously managed sessions across runs so stale restored sessions can be updated safely.
+
+**To rescan after adding, moving, or removing repos:**
 ```bash
 bash sessions.sh
 source ~/.terminility_aliases
@@ -90,6 +92,11 @@ source ~/.terminility_aliases
 **Override the base directory:**
 ```bash
 TERMINILITY_GIT_BASE=~/projects bash sessions.sh
+```
+
+**Override the managed-session state file:**
+```bash
+TERMINILITY_STATE_FILE=~/.cache/terminility/session-paths bash sessions.sh
 ```
 
 ## Session Resume
