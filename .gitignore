@@ -3,3 +3,6 @@ tools/
 
 # Shell artifacts
 *.bak.*
+
+# Local agent handoff log
+CHATHISTORY.md

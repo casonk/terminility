@@ -41,3 +41,11 @@ A Bash toolkit to install, configure, and manage tmux with automatic session sav
 - Use functions for logical grouping.
 - Print status messages with consistent formatting (e.g., `echo "==> Installing tmux"`).
 - Detect OS/package manager automatically — do not hardcode paths.
+
+## Agent Memory
+
+Use `./CHATHISTORY.md` as the standard local handoff file for this repo.
+
+- It is local-only and gitignored.
+- Read it after `AGENTS.md` when resuming work.
+- Keep entries brief and focused on script changes, platform checks, blockers, and next steps.
