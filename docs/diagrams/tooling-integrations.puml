@@ -1,0 +1,69 @@
+@startuml
+title terminility Tooling Integrations
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Monospace
+skinparam componentStyle rectangle
+skinparam linetype ortho
+rectangle ".github/workflows/ci.yml\\n3 detected tools" as source_github_workflows_ci_yml #E0F2FE
+rectangle "install.sh\\n10 detected tools" as source_install_sh #E0F2FE
+rectangle "sessions.sh\\n9 detected tools" as source_sessions_sh #E0F2FE
+rectangle "setup.sh\\n10 detected tools" as source_setup_sh #E0F2FE
+cloud "actions/checkout" as tool_actions_checkout #FEF3C7
+cloud "apt-get" as tool_apt_get #FEF3C7
+cloud "bash" as tool_bash #FEF3C7
+cloud "cat" as tool_cat #FEF3C7
+cloud "chmod" as tool_chmod #FEF3C7
+cloud "cp" as tool_cp #FEF3C7
+cloud "curl" as tool_curl #FEF3C7
+cloud "declare" as tool_declare #FEF3C7
+cloud "die" as tool_die #FEF3C7
+cloud "git" as tool_git #FEF3C7
+cloud "grep" as tool_grep #FEF3C7
+cloud "info" as tool_info #FEF3C7
+cloud "java" as tool_java #FEF3C7
+cloud "mapfile" as tool_mapfile #FEF3C7
+cloud "mkdir" as tool_mkdir #FEF3C7
+cloud "mv" as tool_mv #FEF3C7
+cloud "repo-architecture.drawio" as tool_repo_architecture_drawio #FEF3C7
+cloud "success" as tool_success #FEF3C7
+cloud "tmux" as tool_tmux #FEF3C7
+cloud "warn" as tool_warn #FEF3C7
+cloud "xargs" as tool_xargs #FEF3C7
+source_github_workflows_ci_yml --> tool_actions_checkout
+source_github_workflows_ci_yml --> tool_apt_get
+source_github_workflows_ci_yml --> tool_xargs
+source_install_sh --> tool_apt_get
+source_install_sh --> tool_bash
+source_install_sh --> tool_cp
+source_install_sh --> tool_die
+source_install_sh --> tool_git
+source_install_sh --> tool_grep
+source_install_sh --> tool_info
+source_install_sh --> tool_success
+source_install_sh --> tool_tmux
+source_install_sh --> tool_warn
+source_sessions_sh --> tool_declare
+source_sessions_sh --> tool_die
+source_sessions_sh --> tool_info
+source_sessions_sh --> tool_mapfile
+source_sessions_sh --> tool_mkdir
+source_sessions_sh --> tool_mv
+source_sessions_sh --> tool_success
+source_sessions_sh --> tool_tmux
+source_sessions_sh --> tool_warn
+source_setup_sh --> tool_cat
+source_setup_sh --> tool_chmod
+source_setup_sh --> tool_curl
+source_setup_sh --> tool_die
+source_setup_sh --> tool_info
+source_setup_sh --> tool_java
+source_setup_sh --> tool_mkdir
+source_setup_sh --> tool_repo_architecture_drawio
+source_setup_sh --> tool_success
+source_setup_sh --> tool_warn
+note as toolingGraphSummary
+Scanned 4 tooling entrypoints.
+Detected 21 third-party tools.
+end note
+@enduml
