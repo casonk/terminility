@@ -1,0 +1,62 @@
+@startuml
+title terminility Shell Script Flow
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Monospace
+skinparam componentStyle rectangle
+skinparam linetype ortho
+rectangle "install.sh\\n0 local shell edges\\n9 external tools" as shell_install_sh #DBEAFE
+rectangle "sessions.sh\\n0 local shell edges\\n9 external tools" as shell_sessions_sh #DBEAFE
+rectangle "setup.sh\\n0 local shell edges\\n10 external tools" as shell_setup_sh #DBEAFE
+cloud "apt-get" as tool_apt_get #FEF3C7
+cloud "cat" as tool_cat #FEF3C7
+cloud "chmod" as tool_chmod #FEF3C7
+cloud "cp" as tool_cp #FEF3C7
+cloud "curl" as tool_curl #FEF3C7
+cloud "declare" as tool_declare #FEF3C7
+cloud "die" as tool_die #FEF3C7
+cloud "git" as tool_git #FEF3C7
+cloud "grep" as tool_grep #FEF3C7
+cloud "info" as tool_info #FEF3C7
+cloud "java" as tool_java #FEF3C7
+cloud "mapfile" as tool_mapfile #FEF3C7
+cloud "mkdir" as tool_mkdir #FEF3C7
+cloud "mv" as tool_mv #FEF3C7
+cloud "repo-architecture.drawio" as tool_repo_architecture_drawio #FEF3C7
+cloud "success" as tool_success #FEF3C7
+cloud "tmux" as tool_tmux #FEF3C7
+cloud "warn" as tool_warn #FEF3C7
+shell_install_sh --> tool_apt_get
+shell_install_sh --> tool_cp
+shell_install_sh --> tool_die
+shell_install_sh --> tool_git
+shell_install_sh --> tool_grep
+shell_install_sh --> tool_info
+shell_install_sh --> tool_success
+shell_install_sh --> tool_tmux
+shell_install_sh --> tool_warn
+shell_sessions_sh --> tool_declare
+shell_sessions_sh --> tool_die
+shell_sessions_sh --> tool_info
+shell_sessions_sh --> tool_mapfile
+shell_sessions_sh --> tool_mkdir
+shell_sessions_sh --> tool_mv
+shell_sessions_sh --> tool_success
+shell_sessions_sh --> tool_tmux
+shell_sessions_sh --> tool_warn
+shell_setup_sh --> tool_cat
+shell_setup_sh --> tool_chmod
+shell_setup_sh --> tool_curl
+shell_setup_sh --> tool_die
+shell_setup_sh --> tool_info
+shell_setup_sh --> tool_java
+shell_setup_sh --> tool_mkdir
+shell_setup_sh --> tool_repo_architecture_drawio
+shell_setup_sh --> tool_success
+shell_setup_sh --> tool_warn
+note as shellGraphSummary
+Scanned 3 shell scripts.
+Detected 0 local shell edges.
+Detected 18 external tools.
+end note
+@enduml
