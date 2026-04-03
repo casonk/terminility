@@ -10,45 +10,40 @@
       <mxGeometry x="30" y="80" width="580" height="560" as="geometry" />
     </mxCell>
     <mxCell id="L1" value="1) Installation Layer&#10;• install.sh&#10;• detects package manager (apt/dnf/pacman/brew/zypper)&#10;• installs tmux, clones/updates TPM&#10;• backs up existing ~/.tmux.conf&#10;• runs TPM headlessly to install plugins&#10;• invokes sessions.sh&#10;• wires alias source guard into ~/.bashrc / ~/.zshrc" style="rounded=1;whiteSpace=wrap;align=left;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacingLeft=8;" vertex="1" parent="layer_group">
-      <mxGeometry x="20" y="50" width="540" height="110" as="geometry" />
+      <mxGeometry x="20" y="50" width="540" height="145" as="geometry" />
     </mxCell>
     <mxCell id="L2" value="2) Configuration Layer&#10;• tmux.conf  →  ~/.tmux.conf&#10;• 256-color + true-color, mouse, 50k history, base-index 1&#10;• intuitive split/nav bindings + reload key (prefix+r)&#10;• TPM plugins: tmux-sensible, tmux-resurrect, tmux-continuum&#10;• auto-save every 15 min, auto-restore on server start" style="rounded=1;whiteSpace=wrap;align=left;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacingLeft=8;" vertex="1" parent="layer_group">
-      <mxGeometry x="20" y="185" width="540" height="95" as="geometry" />
+      <mxGeometry x="20" y="305" width="540" height="165" as="geometry" />
     </mxCell>
     <mxCell id="L3" value="3) Session Management Layer&#10;• sessions.sh&#10;• scans GIT_BASE (default: /mnt/4tb-m2/git) for .git dirs&#10;• derives tmux-safe session name  (/ → -,  spaces/dots → -)&#10;• creates sessions idempotently (skips existing)&#10;• ensures tmux server is running before creation" style="rounded=1;whiteSpace=wrap;align=left;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacingLeft=8;" vertex="1" parent="layer_group">
-      <mxGeometry x="20" y="305" width="540" height="95" as="geometry" />
+      <mxGeometry x="20" y="580" width="540" height="130" as="geometry" />
     </mxCell>
     <mxCell id="L4" value="4) Alias Layer&#10;• writes ~/.terminility_aliases  (regenerated atomically each run)&#10;• one alias per session:  tmux new-session -A -s &lt;name&gt; -c &lt;path&gt;&#10;  (-A: attach or create;  -c: start in repo root)&#10;• install.sh adds source guard to shell RCs (idempotent)" style="rounded=1;whiteSpace=wrap;align=left;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacingLeft=8;" vertex="1" parent="layer_group">
-      <mxGeometry x="20" y="425" width="540" height="95" as="geometry" />
+      <mxGeometry x="20" y="735" width="540" height="95" as="geometry" />
     </mxCell>
     <mxCell id="a_L1L2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=arc;jumpSize=10;" edge="1" source="L1" target="L2" parent="layer_group">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="290" y="184" />
-          <mxPoint x="-12" y="184" />
-          <mxPoint x="-12" y="161" />
-          <mxPoint x="290" y="161" />
+          <mxPoint x="60" y="219" />
+          <mxPoint x="-12" y="219" />
+          <mxPoint x="-12" y="281" />
+          <mxPoint x="290" y="281" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L2L3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=arc;jumpSize=10;" edge="1" source="L2" target="L3" parent="layer_group">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="290" y="304" />
-          <mxPoint x="-12" y="304" />
-          <mxPoint x="-12" y="281" />
-          <mxPoint x="60" y="281" />
+          <mxPoint x="290" y="494" />
+          <mxPoint x="616" y="494" />
+          <mxPoint x="616" y="556" />
+          <mxPoint x="60" y="556" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L3L4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=arc;jumpSize=10;" edge="1" source="L3" target="L4" parent="layer_group">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
-        <Array as="points">
-          <mxPoint x="290" y="424" />
-          <mxPoint x="-12" y="424" />
-          <mxPoint x="-12" y="401" />
-          <mxPoint x="290" y="401" />
-        </Array>
+        <Array as="points" />
       </mxGeometry>
     </mxCell>
     <mxCell id="src_group" value="Source Files (tracked)" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=14;" vertex="1" parent="1">
@@ -58,13 +53,13 @@
       <mxGeometry x="20" y="50" width="280" height="45" as="geometry" />
     </mxCell>
     <mxCell id="S2" value="sessions.sh&#10;Repo scanner + session creator + alias generator" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="src_group">
-      <mxGeometry x="20" y="110" width="280" height="45" as="geometry" />
+      <mxGeometry x="20" y="165" width="280" height="45" as="geometry" />
     </mxCell>
     <mxCell id="S3" value="tmux.conf&#10;Tmux configuration source" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="src_group">
-      <mxGeometry x="20" y="170" width="280" height="45" as="geometry" />
+      <mxGeometry x="20" y="290" width="280" height="45" as="geometry" />
     </mxCell>
     <mxCell id="S4" value="docs/&#10;contributor-architecture-blueprint.md&#10;diagrams/repo-architecture.{puml,drawio}" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="src_group">
-      <mxGeometry x="20" y="220" width="280" height="45" as="geometry" />
+      <mxGeometry x="20" y="385" width="280" height="45" as="geometry" />
     </mxCell>
     <mxCell id="ext_group" value="External Inputs" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=14;" vertex="1" parent="1">
       <mxGeometry x="660" y="400" width="320" height="240" as="geometry" />
@@ -73,10 +68,10 @@
       <mxGeometry x="20" y="50" width="280" height="50" as="geometry" />
     </mxCell>
     <mxCell id="E2" value="System package manager&#10;apt / dnf / pacman / brew / zypper&#10;(auto-detected)" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="ext_group">
-      <mxGeometry x="20" y="115" width="280" height="50" as="geometry" />
+      <mxGeometry x="20" y="115" width="280" height="135" as="geometry" />
     </mxCell>
     <mxCell id="E3" value="GitHub (TPM + plugins)&#10;tmux-plugins/tpm&#10;tmux-resurrect  •  tmux-continuum" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="ext_group">
-      <mxGeometry x="20" y="178" width="280" height="50" as="geometry" />
+      <mxGeometry x="20" y="298" width="280" height="50" as="geometry" />
     </mxCell>
     <mxCell id="rt_group" value="Runtime Artifacts (untracked)" style="swimlane;startSize=30;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=14;" vertex="1" parent="1">
       <mxGeometry x="1030" y="80" width="340" height="560" as="geometry" />
@@ -91,67 +86,52 @@
       <mxGeometry x="20" y="105" width="300" height="40" as="geometry" />
     </mxCell>
     <mxCell id="R3" value="~/.tmux/plugins/tmux-resurrect/&#10;~/.tmux/plugins/tmux-continuum/" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="rt_group">
-      <mxGeometry x="20" y="160" width="300" height="50" as="geometry" />
+      <mxGeometry x="20" y="280" width="300" height="95" as="geometry" />
     </mxCell>
     <mxCell id="R4" value="~/.tmux/resurrect/  —  session save files" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="rt_group">
-      <mxGeometry x="20" y="225" width="300" height="40" as="geometry" />
+      <mxGeometry x="20" y="390" width="300" height="80" as="geometry" />
     </mxCell>
     <mxCell id="R5" value="~/.terminility_aliases&#10;generated alias file  (regenerated each run)" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="rt_group">
-      <mxGeometry x="20" y="280" width="300" height="50" as="geometry" />
+      <mxGeometry x="20" y="555" width="300" height="50" as="geometry" />
     </mxCell>
     <mxCell id="R6" value="~/.bash_aliases  /  ~/.zshrc&#10;source guard added by install.sh" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="rt_group">
-      <mxGeometry x="20" y="345" width="300" height="50" as="geometry" />
+      <mxGeometry x="20" y="620" width="300" height="50" as="geometry" />
     </mxCell>
     <mxCell id="flow_label" value="Data Flow&#10;/mnt/4tb-m2/git/**/.git&#10;  → sessions.sh&#10;  → tmux sessions (idempotent)&#10;  → ~/.terminility_aliases&#10;  → ~/.bash_aliases / ~/.zshrc&#10;  → aliases active in every new shell" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
       <mxGeometry x="1030" y="670" width="340" height="130" as="geometry" />
     </mxCell>
     <mxCell id="a_S1L1" value="orchestrates" style="edgeStyle=orthogonalEdgeStyle;dashed=1;endArrow=open;endFill=0;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="S1" target="L1" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
-        <Array as="points">
-          <mxPoint x="324" y="72.5" />
-          <mxPoint x="324" y="-12" />
-          <mxPoint x="-4" y="-12" />
-          <mxPoint x="-4" y="90" />
-        </Array>
+        <Array as="points" />
       </mxGeometry>
     </mxCell>
     <mxCell id="a_S2L3" value="implements" style="edgeStyle=orthogonalEdgeStyle;dashed=1;endArrow=open;endFill=0;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="S2" target="L3" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="160" y="179" />
-          <mxPoint x="-12" y="179" />
-          <mxPoint x="-12" y="281" />
-          <mxPoint x="290" y="281" />
+          <mxPoint x="160" y="234" />
+          <mxPoint x="634" y="234" />
+          <mxPoint x="634" y="556" />
+          <mxPoint x="290" y="556" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_S3L2" value="source" style="edgeStyle=orthogonalEdgeStyle;dashed=1;endArrow=open;endFill=0;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="S3" target="L2" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
-        <Array as="points">
-          <mxPoint x="324" y="192.5" />
-          <mxPoint x="324" y="-12" />
-          <mxPoint x="-4" y="-12" />
-          <mxPoint x="-4" y="232.5" />
-        </Array>
+        <Array as="points" />
       </mxGeometry>
     </mxCell>
     <mxCell id="a_E2L1" value="installs tmux" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="E2" target="L1" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
-        <Array as="points">
-          <mxPoint x="324" y="140" />
-          <mxPoint x="324" y="-12" />
-          <mxPoint x="-4" y="-12" />
-          <mxPoint x="-4" y="120" />
-        </Array>
+        <Array as="points" />
       </mxGeometry>
     </mxCell>
     <mxCell id="a_E3L1" value="clones TPM+plugins" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="E3" target="L1" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="160" y="154" />
-          <mxPoint x="-12" y="154" />
-          <mxPoint x="-12" y="184" />
-          <mxPoint x="290" y="184" />
+          <mxPoint x="160" y="274" />
+          <mxPoint x="-39" y="274" />
+          <mxPoint x="-39" y="219" />
+          <mxPoint x="290" y="219" />
         </Array>
       </mxGeometry>
     </mxCell>
@@ -159,69 +139,58 @@
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
           <mxPoint x="160" y="124" />
-          <mxPoint x="634" y="124" />
-          <mxPoint x="634" y="281" />
-          <mxPoint x="520" y="281" />
+          <mxPoint x="652" y="124" />
+          <mxPoint x="652" y="556" />
+          <mxPoint x="520" y="556" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L1R1" value="deploys" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="L1" target="R1b" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
-        <Array as="points">
-          <mxPoint x="-4" y="90" />
-          <mxPoint x="-4" y="-12" />
-          <mxPoint x="344" y="-12" />
-          <mxPoint x="344" y="70" />
-        </Array>
+        <Array as="points" />
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L1R2" value="clones" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="L1" target="R2" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
-        <Array as="points">
-          <mxPoint x="-4" y="105" />
-          <mxPoint x="-4" y="-12" />
-          <mxPoint x="344" y="-12" />
-          <mxPoint x="344" y="125" />
-        </Array>
+        <Array as="points" />
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L1R3" value="installs" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="L1" target="R3" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="-4" y="120" />
-          <mxPoint x="-4" y="-12" />
-          <mxPoint x="344" y="-12" />
-          <mxPoint x="344" y="185" />
+          <mxPoint x="520" y="219" />
+          <mxPoint x="1004" y="219" />
+          <mxPoint x="1004" y="256" />
+          <mxPoint x="170" y="256" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L3R4" value="sessions use" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="L3" target="R4" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="290" y="281" />
-          <mxPoint x="-12" y="281" />
-          <mxPoint x="-12" y="289" />
-          <mxPoint x="170" y="289" />
+          <mxPoint x="290" y="556" />
+          <mxPoint x="1402" y="556" />
+          <mxPoint x="1402" y="494" />
+          <mxPoint x="170" y="494" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L4R5" value="generates" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="L4" target="R5" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="60" y="401" />
-          <mxPoint x="-12" y="401" />
-          <mxPoint x="-12" y="354" />
-          <mxPoint x="170" y="354" />
+          <mxPoint x="60" y="711" />
+          <mxPoint x="1437" y="711" />
+          <mxPoint x="1437" y="629" />
+          <mxPoint x="170" y="629" />
         </Array>
       </mxGeometry>
     </mxCell>
     <mxCell id="a_L4R6" value="wires source guard" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;fontSize=11;jumpStyle=arc;jumpSize=10;" edge="1" source="L4" target="R6" parent="1">
       <mxGeometry relative="1" as="geometry" archilityManagedRoute="1">
         <Array as="points">
-          <mxPoint x="520" y="401" />
-          <mxPoint x="634" y="401" />
-          <mxPoint x="634" y="419" />
-          <mxPoint x="170" y="419" />
+          <mxPoint x="520" y="711" />
+          <mxPoint x="170" y="711" />
+          <mxPoint x="170" y="694" />
         </Array>
       </mxGeometry>
     </mxCell>
