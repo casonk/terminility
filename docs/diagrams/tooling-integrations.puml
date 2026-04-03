@@ -5,10 +5,10 @@ skinparam shadowing false
 skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
-rectangle ".github/workflows/ci.yml\\n3 detected tools" as source_github_workflows_ci_yml #E0F2FE
-rectangle "install.sh\\n10 detected tools" as source_install_sh #E0F2FE
-rectangle "sessions.sh\\n9 detected tools" as source_sessions_sh #E0F2FE
-rectangle "setup.sh\\n10 detected tools" as source_setup_sh #E0F2FE
+rectangle ".github/workflows/ci.yml\n3 detected tools" as source_github_workflows_ci_yml #E0F2FE
+rectangle "install.sh\n10 detected tools" as source_install_sh #E0F2FE
+rectangle "sessions.sh\n9 detected tools" as source_sessions_sh #E0F2FE
+rectangle "setup.sh\n10 detected tools" as source_setup_sh #E0F2FE
 cloud "actions/checkout" as tool_actions_checkout #FEF3C7
 cloud "apt-get" as tool_apt_get #FEF3C7
 cloud "bash" as tool_bash #FEF3C7

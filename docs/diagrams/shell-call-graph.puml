@@ -5,9 +5,9 @@ skinparam shadowing false
 skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
-rectangle "install.sh\\n0 local shell edges\\n9 external tools" as shell_install_sh #DBEAFE
-rectangle "sessions.sh\\n0 local shell edges\\n9 external tools" as shell_sessions_sh #DBEAFE
-rectangle "setup.sh\\n0 local shell edges\\n10 external tools" as shell_setup_sh #DBEAFE
+rectangle "install.sh\n0 local shell edges\n9 external tools" as shell_install_sh #DBEAFE
+rectangle "sessions.sh\n0 local shell edges\n9 external tools" as shell_sessions_sh #DBEAFE
+rectangle "setup.sh\n0 local shell edges\n10 external tools" as shell_setup_sh #DBEAFE
 cloud "apt-get" as tool_apt_get #FEF3C7
 cloud "cat" as tool_cat #FEF3C7
 cloud "chmod" as tool_chmod #FEF3C7
