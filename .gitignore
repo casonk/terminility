@@ -6,3 +6,4 @@ tools/
 
 # Local agent handoff log
 CHATHISTORY.md
+.codex
