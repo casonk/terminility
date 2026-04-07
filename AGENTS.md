@@ -42,6 +42,16 @@ A Bash toolkit to install, configure, and manage tmux with automatic session sav
 - Print status messages with consistent formatting (e.g., `echo "==> Installing tmux"`).
 - Detect OS/package manager automatically — do not hardcode paths.
 
+## Local CI Verification
+
+Run before every push:
+
+```bash
+pre-commit run --all-files
+```
+
+Do not push changes that have not passed all checks locally.
+
 ## Portfolio Standards Reference
 
 For portfolio-wide repository standards and baseline conventions, consult the control-plane repo at `./util-repos/traction-control` from the portfolio root.
