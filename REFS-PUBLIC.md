@@ -1,4 +1,4 @@
-# REFS-PUBLIC.md — Public References
+# REFS-PUBLIC.md - Public References
 
 > Record external public repositories, datasets, documentation, APIs, or other
 > public resources that this repository utilizes or depends on.
@@ -6,22 +6,20 @@
 
 ## Public Repositories
 
-<!-- External repos this project depends on, forks, or integrates with:
-- https://github.com/org/repo — description of usage
--->
+- https://github.com/tmux-plugins/tpm - tmux plugin manager installed by the setup flow
+- https://github.com/tmux-plugins/tmux-resurrect - session save and restore plugin
+- https://github.com/tmux-plugins/tmux-continuum - automatic tmux session persistence plugin
 
 ## Public Datasets and APIs
 
-<!-- Publicly accessible data sources, REST APIs, or external feeds consumed here:
-- https://example.com/dataset — description of usage
--->
+- No standing public data APIs are required; the repo configures local tmux sessions and shell aliases.
 
 ## Documentation and Specifications
 
-<!-- Reference docs, RFCs, standards, or upstream project documentation:
-- https://docs.example.com — description
--->
+- https://github.com/tmux/tmux/wiki - tmux usage and configuration reference
+- https://plantuml.com/ - PlantUML render reference used by setup.sh
+- https://github.com/jgraph/drawio - draw.io desktop/AppImage source used by setup.sh
 
 ## Notes
 
-<!-- Any context about how these public references are used or versioned -->
+- The repo scans local git checkouts but does not depend on any public dataset or remote control-plane API.
