@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# terminility/sessions.sh — Create tmux sessions for all git repos in GIT_BASE
+# terminility/sessions.sh — Create terminal multiplexer sessions for all git repos in GIT_BASE
 set -euo pipefail
 
 GIT_BASE="${TERMINILITY_GIT_BASE:-/mnt/4tb-m2/git}"
 ALIAS_FILE="${TERMINILITY_ALIAS_FILE:-$HOME/.terminility_aliases}"
 STATE_FILE="${TERMINILITY_STATE_FILE:-$HOME/.terminility_session_paths}"
+TERMINILITY_BACKEND="${TERMINILITY_BACKEND:-tmux}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
@@ -12,6 +13,49 @@ info()    { echo -e "${CYAN}[terminility]${NC} $*"; }
 success() { echo -e "${GREEN}[terminility]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[terminility]${NC} $*"; }
 die()     { echo -e "${RED}[terminility] ERROR:${NC} $*" >&2; exit 1; }
+
+# ─── Backend: tmux ────────────────────────────────────────────────────────────
+
+backend_check_tmux()        { command -v tmux &>/dev/null; }
+backend_start_server_tmux() { tmux list-sessions &>/dev/null 2>&1 || { info "Starting tmux server..."; tmux start-server; }; }
+session_exists_tmux()       { tmux has-session -t "$1" 2>/dev/null; }
+session_create_tmux()       { tmux new-session -d -s "$1" -c "$2"; }
+session_kill_tmux()         { tmux kill-session -t "$1"; }
+session_env_var_tmux()      { echo "TMUX"; }
+build_session_command_tmux() {
+    local session_name="$1" repo_path="$2"
+    printf 'tmux new-session -A -s %s -c %q' "$session_name" "$repo_path"
+}
+
+# ─── Backend: screen (boilerplate) ────────────────────────────────────────────
+# screen does not support working-directory at attach time, so we cd inside the
+# shell started by the session and rely on screen -r for reattach.
+
+backend_check_screen()        { command -v screen &>/dev/null; }
+backend_start_server_screen() { : ; }  # screen has no separate server process
+session_exists_screen()       { screen -list 2>/dev/null | grep -qE "\.$1[[:space:]]"; }
+session_create_screen()       { screen -dmS "$1" bash -c "$(printf 'cd %q && exec bash' "$2")"; }
+session_kill_screen()         { screen -S "$1" -X quit; }
+session_env_var_screen()      { echo "STY"; }
+build_session_command_screen() {
+    local session_name="$1" repo_path="$2"
+    local cd_cmd
+    cd_cmd="$(printf 'cd %q && exec bash' "$repo_path")"
+    printf 'screen -r %q 2>/dev/null || { screen -dmS %q bash -c %q; screen -r %q; }' \
+        "$session_name" "$session_name" "$cd_cmd" "$session_name"
+}
+
+# ─── Backend dispatcher ────────────────────────────────────────────────────────
+
+backend_check()         { "backend_check_${TERMINILITY_BACKEND}"; }
+backend_start_server()  { "backend_start_server_${TERMINILITY_BACKEND}"; }
+session_exists()        { "session_exists_${TERMINILITY_BACKEND}" "$1"; }
+session_create()        { "session_create_${TERMINILITY_BACKEND}" "$1" "$2"; }
+session_kill()          { "session_kill_${TERMINILITY_BACKEND}" "$1"; }
+session_env_var()       { "session_env_var_${TERMINILITY_BACKEND}"; }
+build_session_command() { "build_session_command_${TERMINILITY_BACKEND}" "$1" "$2"; }
+
+# ─── Session name ─────────────────────────────────────────────────────────────
 
 build_session_name() {
     local repo_path="$1"
@@ -22,9 +66,7 @@ build_session_name() {
     printf '%s\n' "$session_name"
 }
 
-session_exists() {
-    tmux has-session -t "$1" 2>/dev/null
-}
+# ─── State persistence ────────────────────────────────────────────────────────
 
 load_previous_state() {
     local line repo_path session_name
@@ -68,6 +110,7 @@ load_previous_aliases() {
                 PREVIOUS_GIT_BASE="${line#\# GIT_BASE: }"
                 ;;
             alias\ *)
+                # legacy format: alias name='tmux new-session -A -s name -c /path'
                 if [[ "$line" =~ ^alias[[:space:]]+([^=]+)=(.+)$ ]]; then
                     session_name="${BASH_REMATCH[1]}"
                     alias_value="${BASH_REMATCH[2]}"
@@ -94,23 +137,73 @@ load_previous_session_paths() {
     load_previous_aliases || true
 }
 
+# ─── RC file injection ────────────────────────────────────────────────────────
+
+ensure_rc_sourced() {
+    local source_line="[[ -f $ALIAS_FILE ]] && source $ALIAS_FILE"
+    local shell_bin shell_name rc_file injected=0
+    declare -A seen_rc
+
+    # Only shells whose RC files support [[ ]] and bash-compatible source syntax
+    declare -A SHELL_RC=(
+        [bash]="$HOME/.bashrc"
+        [zsh]="$HOME/.zshrc"
+        [ksh]="$HOME/.kshrc"
+        [ksh93]="$HOME/.kshrc"
+        [mksh]="$HOME/.mkshrc"
+    )
+
+    [[ -f /etc/shells ]] || { warn "/etc/shells not found; skipping RC injection"; return 0; }
+
+    while IFS= read -r shell_bin || [[ -n "$shell_bin" ]]; do
+        [[ "$shell_bin" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${shell_bin// }" ]] && continue
+        [[ -x "$shell_bin" ]] || continue
+
+        shell_name="$(basename "$shell_bin")"
+        rc_file="${SHELL_RC[$shell_name]-}"
+
+        [[ -n "$rc_file" ]] || continue
+        [[ -f "$rc_file" ]] || continue
+        [[ -n "${seen_rc[$rc_file]+x}" ]] && continue
+        seen_rc["$rc_file"]=1
+
+        if grep -qF "$ALIAS_FILE" "$rc_file"; then
+            echo -e "  ${YELLOW}skip${NC}   $rc_file  (already sources aliases)"
+        else
+            { echo ""; echo "# terminility — auto-sourced by sessions.sh"; echo "$source_line"; } >> "$rc_file"
+            echo -e "  ${GREEN}inject${NC} $rc_file"
+            ((injected++)) || true
+        fi
+    done < /etc/shells
+
+    if [[ $injected -gt 0 ]]; then
+        info "RC files updated. Open a new shell or run: source $ALIAS_FILE"
+    fi
+}
+
+# ─── Alias and state file writers ─────────────────────────────────────────────
+
 write_alias_file() {
-    local alias_dir alias_tmp command session_name repo_path
+    local alias_dir alias_tmp session_name repo_path env_var session_cmd
+    local env_var_name
+    env_var_name="$(session_env_var)"
 
     alias_dir="$(dirname "$ALIAS_FILE")"
     mkdir -p "$alias_dir"
     alias_tmp="$(mktemp "${ALIAS_FILE}.XXXXXX")"
 
     {
-        echo "# terminility — auto-generated tmux session aliases"
+        echo "# terminility — auto-generated ${TERMINILITY_BACKEND} session aliases"
         echo "# Regenerate: bash $SCRIPT_DIR/sessions.sh"
         echo "# GIT_BASE: $GIT_BASE"
         echo ""
         if [[ ${#SESSION_PATHS[@]} -gt 0 ]]; then
             while IFS= read -r session_name; do
                 repo_path="${SESSION_PATHS[$session_name]}"
-                command="tmux new-session -A -s ${session_name} -c ${repo_path}"
-                printf 'alias %s=%q\n' "$session_name" "$command"
+                session_cmd="$(build_session_command "$session_name" "$repo_path")"
+                printf '%s() { if [[ -n "$%s" ]]; then cd %q; else %s; fi; }\n' \
+                    "$session_name" "$env_var_name" "$repo_path" "$session_cmd"
             done < <(printf '%s\n' "${!SESSION_PATHS[@]}" | sort)
         fi
     } > "$alias_tmp"
@@ -126,7 +219,7 @@ write_state_file() {
     state_tmp="$(mktemp "${STATE_FILE}.XXXXXX")"
 
     {
-        echo "# terminility — managed tmux session state"
+        echo "# terminility — managed ${TERMINILITY_BACKEND} session state"
         echo "# Regenerate: bash $SCRIPT_DIR/sessions.sh"
         echo "# GIT_BASE: $GIT_BASE"
         echo ""
@@ -140,6 +233,8 @@ write_state_file() {
     mv "$state_tmp" "$STATE_FILE"
 }
 
+# ─── Session reconciliation ───────────────────────────────────────────────────
+
 reconcile_session() {
     local session_name="$1"
     local repo_path="$2"
@@ -147,8 +242,8 @@ reconcile_session() {
 
     if session_exists "$session_name"; then
         if [[ -n "$previous_repo_path" && "$previous_repo_path" != "$repo_path" ]]; then
-            tmux kill-session -t "$session_name"
-            tmux new-session -d -s "$session_name" -c "$repo_path"
+            session_kill "$session_name"
+            session_create "$session_name" "$repo_path"
             echo -e "  ${GREEN}update${NC} $session_name  →  $repo_path"
             ((updated++)) || true
         else
@@ -156,7 +251,7 @@ reconcile_session() {
             ((skipped++)) || true
         fi
     else
-        tmux new-session -d -s "$session_name" -c "$repo_path"
+        session_create "$session_name" "$repo_path"
         echo -e "  ${GREEN}create${NC} $session_name  →  $repo_path"
         ((created++)) || true
     fi
@@ -186,21 +281,18 @@ cleanup_stale_sessions() {
         fi
 
         if session_exists "$session_name"; then
-            tmux kill-session -t "$session_name"
+            session_kill "$session_name"
             echo -e "  ${YELLOW}remove${NC} $session_name  (no longer managed)"
             ((removed++)) || true
         fi
     done < <(printf '%s\n' "${!PREVIOUS_SESSION_PATHS[@]}" | sort)
 }
 
-[[ -d "$GIT_BASE" ]] || die "GIT_BASE directory not found: $GIT_BASE"
-command -v tmux &>/dev/null || die "tmux is not installed. Run install.sh first."
+# ─── Main ─────────────────────────────────────────────────────────────────────
 
-# ─── Ensure tmux server is running ────────────────────────────────────────────
-if ! tmux list-sessions &>/dev/null 2>&1; then
-    info "Starting tmux server..."
-    tmux start-server
-fi
+[[ -d "$GIT_BASE" ]] || die "GIT_BASE directory not found: $GIT_BASE"
+backend_check || die "${TERMINILITY_BACKEND} is not installed. Run install.sh first."
+backend_start_server
 
 # ─── Collect git repos ────────────────────────────────────────────────────────
 mapfile -t GIT_DIRS < <(find "$GIT_BASE" -mindepth 1 -name ".git" -type d | sort)
@@ -243,8 +335,7 @@ write_state_file
 echo ""
 info "Aliases written to $ALIAS_FILE"
 info "Session state written to $STATE_FILE"
-info "Source it in your shell: source $ALIAS_FILE"
 echo ""
-echo -e "  ${CYAN}Tip:${NC} Add the following to ~/.bashrc or ~/.zshrc so aliases load automatically:"
-echo "    [[ -f $ALIAS_FILE ]] && source $ALIAS_FILE"
+info "Checking RC files for source line..."
+ensure_rc_sourced
 echo ""

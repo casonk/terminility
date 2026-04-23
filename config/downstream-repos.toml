@@ -8,4 +8,6 @@ path = "./util-repos/terminility"
 
 [downstream_repos]
 tracking_basis = "explicit code/config/operational integrations"
-paths = []
+paths = [
+  "./util-repos/clockwork",  # clockwork examples provide the daily sessions.sh timer job
+]

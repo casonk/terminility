@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# terminility/install.sh — Install and configure tmux with session resume
+# terminility/install.sh — Install and configure terminal multiplexer with session resume
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TMUX_CONF_SRC="$REPO_DIR/tmux.conf"
-TMUX_CONF_DEST="$HOME/.tmux.conf"
-TPM_DIR="$HOME/.tmux/plugins/tpm"
 ALIAS_FILE="${TERMINILITY_ALIAS_FILE:-$HOME/.terminility_aliases}"
+TERMINILITY_BACKEND="${TERMINILITY_BACKEND:-tmux}"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 info()    { echo -e "${CYAN}[terminility]${NC} $*"; }
@@ -25,7 +23,8 @@ detect_pkg_manager() {
     fi
 }
 
-# ─── Install tmux ─────────────────────────────────────────────────────────────
+# ─── Backend: tmux ────────────────────────────────────────────────────────────
+
 install_tmux() {
     if command -v tmux &>/dev/null; then
         success "tmux $(tmux -V | cut -d' ' -f2) is already installed."
@@ -44,99 +43,58 @@ install_tmux() {
     success "tmux installed: $(tmux -V)"
 }
 
-# ─── Install TPM (tmux plugin manager) ────────────────────────────────────────
 install_tpm() {
-    if [[ -d "$TPM_DIR/.git" ]]; then
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
+    if [[ -d "$tpm_dir/.git" ]]; then
         info "TPM already installed, pulling latest..."
-        git -C "$TPM_DIR" pull --quiet
+        git -C "$tpm_dir" pull --quiet
     else
-        info "Cloning TPM into $TPM_DIR..."
-        git clone --quiet https://github.com/tmux-plugins/tpm "$TPM_DIR"
+        info "Cloning TPM into $tpm_dir..."
+        git clone --quiet https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
-    success "TPM ready at $TPM_DIR"
+    success "TPM ready at $tpm_dir"
 }
 
-# ─── Install tmux config ──────────────────────────────────────────────────────
-install_config() {
-    if [[ ! -f "$TMUX_CONF_SRC" ]]; then
-        die "tmux.conf not found at $TMUX_CONF_SRC"
-    fi
+install_tmux_config() {
+    local src="$REPO_DIR/tmux.conf" dest="$HOME/.tmux.conf"
+    [[ -f "$src" ]] || die "tmux.conf not found at $src"
 
-    if [[ -f "$TMUX_CONF_DEST" ]]; then
-        local backup="${TMUX_CONF_DEST}.bak.$(date +%Y%m%d_%H%M%S)"
+    if [[ -f "$dest" ]]; then
+        local backup="${dest}.bak.$(date +%Y%m%d_%H%M%S)"
         warn "Existing ~/.tmux.conf backed up to $backup"
-        cp "$TMUX_CONF_DEST" "$backup"
+        cp "$dest" "$backup"
     fi
 
-    cp "$TMUX_CONF_SRC" "$TMUX_CONF_DEST"
-    success "Config written to $TMUX_CONF_DEST"
+    cp "$src" "$dest"
+    success "Config written to $dest"
 }
 
-# ─── Install plugins headlessly ───────────────────────────────────────────────
-install_plugins() {
+install_tmux_plugins() {
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
     info "Installing tmux plugins (tmux-resurrect, tmux-continuum)..."
-    # Start a temporary detached tmux server and run TPM install
     env TMUX_TMPDIR=/tmp tmux new-session -d -s _terminility_install 2>/dev/null || true
-    "$TPM_DIR/bin/install_plugins" 2>&1 | grep -v "^$" || true
+    "$tpm_dir/bin/install_plugins" 2>&1 | grep -v "^$" || true
     tmux kill-session -t _terminility_install 2>/dev/null || true
     success "Plugins installed."
 }
 
-# ─── Reload running tmux server (if any) ──────────────────────────────────────
 reload_tmux() {
     if tmux list-sessions &>/dev/null 2>&1; then
         info "Reloading running tmux server..."
-        tmux source-file "$TMUX_CONF_DEST" 2>/dev/null || true
+        tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
         success "Config reloaded in running tmux server."
     fi
 }
 
-# ─── Wire alias file into shell RC files ──────────────────────────────────────
-wire_aliases() {
-    local source_line="[[ -f $ALIAS_FILE ]] && source $ALIAS_FILE"
-    local wired=0
-    for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
-        [[ -f "$rc" ]] || continue
-        if grep -qF "$ALIAS_FILE" "$rc"; then
-            info "Aliases already wired into $rc"
-        else
-            echo "" >> "$rc"
-            echo "# terminility — git repo session aliases" >> "$rc"
-            echo "$source_line" >> "$rc"
-            success "Wired alias loader into $rc"
-            wired=1
-        fi
-    done
-    if [[ $wired -eq 0 ]]; then
-        info "No changes needed to shell RC files."
-    fi
-}
-
-# ─── Create git repo sessions and generate aliases ────────────────────────────
-setup_sessions() {
-    info "Scanning git repos and creating tmux sessions..."
-    bash "$REPO_DIR/sessions.sh"
-}
-
-# ─── Main ─────────────────────────────────────────────────────────────────────
-main() {
-    echo ""
-    echo -e "${CYAN}╔══════════════════════════════════════╗"
-    echo -e "║         terminility installer        ║"
-    echo -e "╚══════════════════════════════════════╝${NC}"
-    echo ""
-
+install_tmux_backend() {
     install_tmux
     install_tpm
-    install_config
-    install_plugins
+    install_tmux_config
+    install_tmux_plugins
     reload_tmux
-    setup_sessions
-    wire_aliases
+}
 
-    echo ""
-    success "All done! tmux is configured with auto-save (every 15 min) and auto-restore."
-    echo ""
+print_quickref_tmux() {
     echo -e "  ${CYAN}Quick reference:${NC}"
     echo "    tmux                    — start or attach to a session"
     echo "    <session-alias>         — attach to a git repo session (e.g. util-repos-terminility)"
@@ -146,6 +104,75 @@ main() {
     echo "    prefix + r              — reload config"
     echo "    prefix + |              — split horizontally"
     echo "    prefix + -              — split vertically"
+}
+
+# ─── Backend: screen (boilerplate) ────────────────────────────────────────────
+# screen does not have a plugin manager or a repo-managed config equivalent.
+# Add install_screenrc here when a .screenrc is added to the repo.
+
+install_screen() {
+    if command -v screen &>/dev/null; then
+        success "screen $(screen --version 2>&1 | head -1) is already installed."
+        return
+    fi
+
+    local pm; pm=$(detect_pkg_manager)
+    info "Installing screen via $pm..."
+    case "$pm" in
+        apt)    sudo apt-get update -qq && sudo apt-get install -y screen ;;
+        dnf)    sudo dnf install -y screen ;;
+        pacman) sudo pacman -Sy --noconfirm screen ;;
+        brew)   brew install screen ;;
+        zypper) sudo zypper install -y screen ;;
+    esac
+    success "screen installed: $(screen --version 2>&1 | head -1)"
+}
+
+install_screen_backend() {
+    install_screen
+}
+
+print_quickref_screen() {
+    echo -e "  ${CYAN}Quick reference:${NC}"
+    echo "    screen                  — start a new screen session"
+    echo "    <session-alias>         — attach to a git repo session (e.g. util-repos-terminility)"
+    echo "    bash sessions.sh        — rescan repos and refresh sessions/aliases"
+    echo "    Ctrl+a d                — detach from current session"
+    echo "    Ctrl+a ?                — show key bindings"
+    echo "    Ctrl+a |                — split vertically"
+    echo "    Ctrl+a S                — split horizontally"
+}
+
+# ─── Backend dispatcher ────────────────────────────────────────────────────────
+
+install_backend()     { "install_${TERMINILITY_BACKEND}_backend"; }
+print_quickref()      { "print_quickref_${TERMINILITY_BACKEND}"; }
+
+# ─── Session scan (backend-agnostic) ─────────────────────────────────────────
+# sessions.sh handles alias generation and RC file injection via ensure_rc_sourced.
+
+setup_sessions() {
+    info "Scanning git repos and creating ${TERMINILITY_BACKEND} sessions..."
+    TERMINILITY_BACKEND="$TERMINILITY_BACKEND" bash "$REPO_DIR/sessions.sh"
+}
+
+# ─── Main ─────────────────────────────────────────────────────────────────────
+main() {
+    echo ""
+    echo -e "${CYAN}╔══════════════════════════════════════╗"
+    echo -e "║         terminility installer        ║"
+    echo -e "╚══════════════════════════════════════╝${NC}"
+    echo ""
+    info "Backend: ${TERMINILITY_BACKEND}"
+    echo ""
+
+    install_backend
+    setup_sessions
+
+    echo ""
+    success "All done! ${TERMINILITY_BACKEND} is configured with terminility session management."
+    echo ""
+    print_quickref
     echo ""
     echo -e "  ${YELLOW}Note:${NC} Open a new shell (or run: source $ALIAS_FILE) to activate aliases."
     echo ""

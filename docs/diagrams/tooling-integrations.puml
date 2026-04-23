@@ -6,11 +6,18 @@ skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
 rectangle ".github/workflows/ci.yml\n3 detected tools" as source_github_workflows_ci_yml #E0F2FE
-rectangle "install.sh\n10 detected tools" as source_install_sh #E0F2FE
-rectangle "sessions.sh\n9 detected tools" as source_sessions_sh #E0F2FE
+rectangle "install.sh\n13 detected tools" as source_install_sh #E0F2FE
+rectangle "scripts/run_tachometer_profile.sh\n3 detected tools" as source_scripts_run_tachometer_profile_sh #E0F2FE
+rectangle "sessions.sh\n19 detected tools" as source_sessions_sh #E0F2FE
 rectangle "setup.sh\n10 detected tools" as source_setup_sh #E0F2FE
+cloud ".bashrc" as tool_bashrc #FEF3C7
+cloud ".kshrc" as tool_kshrc #FEF3C7
+cloud ".mkshrc" as tool_mkshrc #FEF3C7
+cloud ".zshrc" as tool_zshrc #FEF3C7
 cloud "actions/checkout" as tool_actions_checkout #FEF3C7
 cloud "apt-get" as tool_apt_get #FEF3C7
+cloud "backend_check" as tool_backend_check #FEF3C7
+cloud "backend_start_server" as tool_backend_start_server #FEF3C7
 cloud "bash" as tool_bash #FEF3C7
 cloud "cat" as tool_cat #FEF3C7
 cloud "chmod" as tool_chmod #FEF3C7
@@ -21,12 +28,21 @@ cloud "die" as tool_die #FEF3C7
 cloud "git" as tool_git #FEF3C7
 cloud "grep" as tool_grep #FEF3C7
 cloud "info" as tool_info #FEF3C7
+cloud "install_backend" as tool_install_backend #FEF3C7
+cloud "install_plugins" as tool_install_plugins #FEF3C7
 cloud "java" as tool_java #FEF3C7
 cloud "mapfile" as tool_mapfile #FEF3C7
 cloud "mkdir" as tool_mkdir #FEF3C7
 cloud "mv" as tool_mv #FEF3C7
+cloud "print_quickref" as tool_print_quickref #FEF3C7
 cloud "repo-architecture.drawio" as tool_repo_architecture_drawio #FEF3C7
+cloud "run" as tool_run #FEF3C7
+cloud "screen" as tool_screen #FEF3C7
+cloud "session_create" as tool_session_create #FEF3C7
+cloud "session_kill" as tool_session_kill #FEF3C7
 cloud "success" as tool_success #FEF3C7
+cloud "summarize" as tool_summarize #FEF3C7
+cloud "tachometer" as tool_tachometer #FEF3C7
 cloud "tmux" as tool_tmux #FEF3C7
 cloud "warn" as tool_warn #FEF3C7
 cloud "xargs" as tool_xargs #FEF3C7
@@ -40,15 +56,31 @@ source_install_sh --> tool_die
 source_install_sh --> tool_git
 source_install_sh --> tool_grep
 source_install_sh --> tool_info
+source_install_sh --> tool_install_backend
+source_install_sh --> tool_install_plugins
+source_install_sh --> tool_print_quickref
 source_install_sh --> tool_success
 source_install_sh --> tool_tmux
 source_install_sh --> tool_warn
+source_scripts_run_tachometer_profile_sh --> tool_run
+source_scripts_run_tachometer_profile_sh --> tool_summarize
+source_scripts_run_tachometer_profile_sh --> tool_tachometer
+source_sessions_sh --> tool_bashrc
+source_sessions_sh --> tool_kshrc
+source_sessions_sh --> tool_mkshrc
+source_sessions_sh --> tool_zshrc
+source_sessions_sh --> tool_backend_check
+source_sessions_sh --> tool_backend_start_server
 source_sessions_sh --> tool_declare
 source_sessions_sh --> tool_die
+source_sessions_sh --> tool_grep
 source_sessions_sh --> tool_info
 source_sessions_sh --> tool_mapfile
 source_sessions_sh --> tool_mkdir
 source_sessions_sh --> tool_mv
+source_sessions_sh --> tool_screen
+source_sessions_sh --> tool_session_create
+source_sessions_sh --> tool_session_kill
 source_sessions_sh --> tool_success
 source_sessions_sh --> tool_tmux
 source_sessions_sh --> tool_warn
@@ -63,7 +95,7 @@ source_setup_sh --> tool_repo_architecture_drawio
 source_setup_sh --> tool_success
 source_setup_sh --> tool_warn
 note as toolingGraphSummary
-Scanned 4 tooling entrypoints.
-Detected 21 third-party tools.
+Scanned 5 tooling entrypoints.
+Detected 36 third-party tools.
 end note
 @enduml
