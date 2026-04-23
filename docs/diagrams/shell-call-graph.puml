@@ -5,10 +5,17 @@ skinparam shadowing false
 skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
-rectangle "install.sh\n0 local shell edges\n9 external tools" as shell_install_sh #DBEAFE
-rectangle "sessions.sh\n0 local shell edges\n9 external tools" as shell_sessions_sh #DBEAFE
+rectangle "install.sh\n0 local shell edges\n12 external tools" as shell_install_sh #DBEAFE
+rectangle "scripts/run_tachometer_profile.sh\n0 local shell edges\n3 external tools" as shell_scripts_run_tachometer_profile_sh #DBEAFE
+rectangle "sessions.sh\n0 local shell edges\n19 external tools" as shell_sessions_sh #DBEAFE
 rectangle "setup.sh\n0 local shell edges\n10 external tools" as shell_setup_sh #DBEAFE
+cloud ".bashrc" as tool_bashrc #FEF3C7
+cloud ".kshrc" as tool_kshrc #FEF3C7
+cloud ".mkshrc" as tool_mkshrc #FEF3C7
+cloud ".zshrc" as tool_zshrc #FEF3C7
 cloud "apt-get" as tool_apt_get #FEF3C7
+cloud "backend_check" as tool_backend_check #FEF3C7
+cloud "backend_start_server" as tool_backend_start_server #FEF3C7
 cloud "cat" as tool_cat #FEF3C7
 cloud "chmod" as tool_chmod #FEF3C7
 cloud "cp" as tool_cp #FEF3C7
@@ -18,12 +25,21 @@ cloud "die" as tool_die #FEF3C7
 cloud "git" as tool_git #FEF3C7
 cloud "grep" as tool_grep #FEF3C7
 cloud "info" as tool_info #FEF3C7
+cloud "install_backend" as tool_install_backend #FEF3C7
+cloud "install_plugins" as tool_install_plugins #FEF3C7
 cloud "java" as tool_java #FEF3C7
 cloud "mapfile" as tool_mapfile #FEF3C7
 cloud "mkdir" as tool_mkdir #FEF3C7
 cloud "mv" as tool_mv #FEF3C7
+cloud "print_quickref" as tool_print_quickref #FEF3C7
 cloud "repo-architecture.drawio" as tool_repo_architecture_drawio #FEF3C7
+cloud "run" as tool_run #FEF3C7
+cloud "screen" as tool_screen #FEF3C7
+cloud "session_create" as tool_session_create #FEF3C7
+cloud "session_kill" as tool_session_kill #FEF3C7
 cloud "success" as tool_success #FEF3C7
+cloud "summarize" as tool_summarize #FEF3C7
+cloud "tachometer" as tool_tachometer #FEF3C7
 cloud "tmux" as tool_tmux #FEF3C7
 cloud "warn" as tool_warn #FEF3C7
 shell_install_sh --> tool_apt_get
@@ -32,15 +48,31 @@ shell_install_sh --> tool_die
 shell_install_sh --> tool_git
 shell_install_sh --> tool_grep
 shell_install_sh --> tool_info
+shell_install_sh --> tool_install_backend
+shell_install_sh --> tool_install_plugins
+shell_install_sh --> tool_print_quickref
 shell_install_sh --> tool_success
 shell_install_sh --> tool_tmux
 shell_install_sh --> tool_warn
+shell_scripts_run_tachometer_profile_sh --> tool_run
+shell_scripts_run_tachometer_profile_sh --> tool_summarize
+shell_scripts_run_tachometer_profile_sh --> tool_tachometer
+shell_sessions_sh --> tool_bashrc
+shell_sessions_sh --> tool_kshrc
+shell_sessions_sh --> tool_mkshrc
+shell_sessions_sh --> tool_zshrc
+shell_sessions_sh --> tool_backend_check
+shell_sessions_sh --> tool_backend_start_server
 shell_sessions_sh --> tool_declare
 shell_sessions_sh --> tool_die
+shell_sessions_sh --> tool_grep
 shell_sessions_sh --> tool_info
 shell_sessions_sh --> tool_mapfile
 shell_sessions_sh --> tool_mkdir
 shell_sessions_sh --> tool_mv
+shell_sessions_sh --> tool_screen
+shell_sessions_sh --> tool_session_create
+shell_sessions_sh --> tool_session_kill
 shell_sessions_sh --> tool_success
 shell_sessions_sh --> tool_tmux
 shell_sessions_sh --> tool_warn
@@ -55,8 +87,8 @@ shell_setup_sh --> tool_repo_architecture_drawio
 shell_setup_sh --> tool_success
 shell_setup_sh --> tool_warn
 note as shellGraphSummary
-Scanned 3 shell scripts.
+Scanned 4 shell scripts.
 Detected 0 local shell edges.
-Detected 18 external tools.
+Detected 33 external tools.
 end note
 @enduml
