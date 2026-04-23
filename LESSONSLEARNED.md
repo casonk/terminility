@@ -12,6 +12,8 @@ Unlike `CHATHISTORY.md`, this file should keep only reusable lessons that should
 
 ## Lessons
 
+- Clockwork (`util-repos/clockwork`) is the local job-scheduling framework for this portfolio — it uses systemd timers and cron, not a cloud scheduler. Scheduled tasks for terminility (e.g. daily `sessions.sh` rebuild) belong as clockwork examples in `clockwork/examples/terminility/`, not as remote triggers or standalone cron entries.
+
 - Document the repository around its real execution, curation, or integration flow instead of only the top-level folder list.
 - Keep local-only, private, reference-only, or generated boundaries explicit so published or runtime behavior is not confused with offline material or non-committable inputs.
 - Re-run repo-appropriate validation after changing generated artifacts, diagrams, workflows, or other CI-facing files so formatting and compatibility issues are caught before push.
