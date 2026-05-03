@@ -6,6 +6,7 @@ skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
 rectangle ".github/workflows/ci.yml\n3 detected tools" as source_github_workflows_ci_yml #E0F2FE
+rectangle ".github/workflows/secret-scan.yml\n2 detected tools" as source_github_workflows_secret_scan_yml #E0F2FE
 rectangle "install.sh\n13 detected tools" as source_install_sh #E0F2FE
 rectangle "scripts/run_tachometer_profile.sh\n3 detected tools" as source_scripts_run_tachometer_profile_sh #E0F2FE
 rectangle "sessions.sh\n19 detected tools" as source_sessions_sh #E0F2FE
@@ -26,6 +27,7 @@ cloud "curl" as tool_curl #FEF3C7
 cloud "declare" as tool_declare #FEF3C7
 cloud "die" as tool_die #FEF3C7
 cloud "git" as tool_git #FEF3C7
+cloud "gitleaks/gitleaks-action" as tool_gitleaks_gitleaks_action #FEF3C7
 cloud "grep" as tool_grep #FEF3C7
 cloud "info" as tool_info #FEF3C7
 cloud "install_backend" as tool_install_backend #FEF3C7
@@ -49,6 +51,8 @@ cloud "xargs" as tool_xargs #FEF3C7
 source_github_workflows_ci_yml --> tool_actions_checkout
 source_github_workflows_ci_yml --> tool_apt_get
 source_github_workflows_ci_yml --> tool_xargs
+source_github_workflows_secret_scan_yml --> tool_actions_checkout
+source_github_workflows_secret_scan_yml --> tool_gitleaks_gitleaks_action
 source_install_sh --> tool_apt_get
 source_install_sh --> tool_bash
 source_install_sh --> tool_cp
@@ -95,7 +99,7 @@ source_setup_sh --> tool_repo_architecture_drawio
 source_setup_sh --> tool_success
 source_setup_sh --> tool_warn
 note as toolingGraphSummary
-Scanned 5 tooling entrypoints.
-Detected 36 third-party tools.
+Scanned 6 tooling entrypoints.
+Detected 37 third-party tools.
 end note
 @enduml
