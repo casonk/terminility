@@ -6,7 +6,7 @@ skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
 rectangle ".github/workflows/ci.yml\n3 detected tools" as source_github_workflows_ci_yml #E0F2FE
-rectangle ".github/workflows/secret-scan.yml\n2 detected tools" as source_github_workflows_secret_scan_yml #E0F2FE
+rectangle ".github/workflows/secret-scan.yml\n5 detected tools" as source_github_workflows_secret_scan_yml #E0F2FE
 rectangle "install.sh\n13 detected tools" as source_install_sh #E0F2FE
 rectangle "scripts/run_tachometer_profile.sh\n3 detected tools" as source_scripts_run_tachometer_profile_sh #E0F2FE
 rectangle "sessions.sh\n19 detected tools" as source_sessions_sh #E0F2FE
@@ -16,6 +16,7 @@ cloud ".kshrc" as tool_kshrc #FEF3C7
 cloud ".mkshrc" as tool_mkshrc #FEF3C7
 cloud ".zshrc" as tool_zshrc #FEF3C7
 cloud "actions/checkout" as tool_actions_checkout #FEF3C7
+cloud "actions/upload-artifact" as tool_actions_upload_artifact #FEF3C7
 cloud "apt-get" as tool_apt_get #FEF3C7
 cloud "backend_check" as tool_backend_check #FEF3C7
 cloud "backend_start_server" as tool_backend_start_server #FEF3C7
@@ -45,6 +46,7 @@ cloud "session_kill" as tool_session_kill #FEF3C7
 cloud "success" as tool_success #FEF3C7
 cloud "summarize" as tool_summarize #FEF3C7
 cloud "tachometer" as tool_tachometer #FEF3C7
+cloud "tar" as tool_tar #FEF3C7
 cloud "tmux" as tool_tmux #FEF3C7
 cloud "warn" as tool_warn #FEF3C7
 cloud "xargs" as tool_xargs #FEF3C7
@@ -52,7 +54,10 @@ source_github_workflows_ci_yml --> tool_actions_checkout
 source_github_workflows_ci_yml --> tool_apt_get
 source_github_workflows_ci_yml --> tool_xargs
 source_github_workflows_secret_scan_yml --> tool_actions_checkout
+source_github_workflows_secret_scan_yml --> tool_actions_upload_artifact
+source_github_workflows_secret_scan_yml --> tool_curl
 source_github_workflows_secret_scan_yml --> tool_gitleaks_gitleaks_action
+source_github_workflows_secret_scan_yml --> tool_tar
 source_install_sh --> tool_apt_get
 source_install_sh --> tool_bash
 source_install_sh --> tool_cp
@@ -100,6 +105,6 @@ source_setup_sh --> tool_success
 source_setup_sh --> tool_warn
 note as toolingGraphSummary
 Scanned 6 tooling entrypoints.
-Detected 37 third-party tools.
+Detected 39 third-party tools.
 end note
 @enduml
