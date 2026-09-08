@@ -9,6 +9,7 @@ rectangle "install.sh\n0 local shell edges\n12 external tools" as shell_install_
 rectangle "scripts/run_tachometer_profile.sh\n0 local shell edges\n3 external tools" as shell_scripts_run_tachometer_profile_sh #DBEAFE
 rectangle "sessions.sh\n0 local shell edges\n19 external tools" as shell_sessions_sh #DBEAFE
 rectangle "setup.sh\n0 local shell edges\n10 external tools" as shell_setup_sh #DBEAFE
+rectangle "tests/run_tests.sh\n0 local shell edges\n2 external tools" as shell_tests_run_tests_sh #DBEAFE
 cloud ".bashrc" as tool_bashrc #FEF3C7
 cloud ".kshrc" as tool_kshrc #FEF3C7
 cloud ".mkshrc" as tool_mkshrc #FEF3C7
@@ -86,8 +87,10 @@ shell_setup_sh --> tool_mkdir
 shell_setup_sh --> tool_repo_architecture_drawio
 shell_setup_sh --> tool_success
 shell_setup_sh --> tool_warn
+shell_tests_run_tests_sh --> tool_grep
+shell_tests_run_tests_sh --> tool_tmux
 note as shellGraphSummary
-Scanned 4 shell scripts.
+Scanned 5 shell scripts.
 Detected 0 local shell edges.
 Detected 33 external tools.
 end note
