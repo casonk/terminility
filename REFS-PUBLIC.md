@@ -17,6 +17,7 @@
 ## Documentation and Specifications
 
 - https://github.com/tmux/tmux/wiki - tmux usage and configuration reference
+- https://www.gnu.org/software/screen/manual/screen.html - GNU Screen reference for the optional session backend
 - https://plantuml.com/ - PlantUML render reference used by setup.sh
 - https://github.com/jgraph/drawio - draw.io desktop/AppImage source used by setup.sh
 
