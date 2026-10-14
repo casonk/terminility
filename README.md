@@ -30,7 +30,7 @@ bash setup.sh
 
 ## Setup (diagram tools)
 
-`setup.sh` downloads PlantUML and draw.io desktop and renders all diagrams in `docs/diagrams/`. It mirrors the same tool-bootstrap pattern as finance-pipeline.
+`setup.sh` downloads PlantUML and draw.io desktop and renders all diagrams in `docs/diagrams/`. It follows the same tool-bootstrap pattern as the other portfolio repositories.
 
 ```bash
 bash setup.sh            # download tools + render all diagrams
