@@ -1,14 +1,14 @@
 # Reviewed historical findings: old diagrams that embedded a local
 # workspace path. Fingerprints are commit:file:rule:line.
-21d87bb58a7f5855d3eee0342b08ed6127a37ef1:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
-2aa15547865177974838d7ce8ce9f04f094c3085:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
-2aa15547865177974838d7ce8ce9f04f094c3085:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:105
-2aa15547865177974838d7ce8ce9f04f094c3085:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:72
+eef8bc9538930fbbd94eeaf6ce55c35774c15dbf:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
+14a03f5d1ca4f621d3bdf9d0ab029c735d947819:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
+14a03f5d1ca4f621d3bdf9d0ab029c735d947819:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:105
+14a03f5d1ca4f621d3bdf9d0ab029c735d947819:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:72
 2cd9a7fb383b80c8dd618f0921cba3446217479e:docs/diagrams/repo-architecture.puml:portfolio-git-workspace-path:49
 2cd9a7fb383b80c8dd618f0921cba3446217479e:docs/diagrams/repo-architecture.puml:portfolio-git-workspace-path:80
-5269563f5f3119d2ce97cc28aa0b835c607ed44c:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
-5269563f5f3119d2ce97cc28aa0b835c607ed44c:docs/diagrams/repo-architecture.puml.svg:portfolio-git-workspace-path:1
-df3fe101577de856ad8f96b14e73293309f6caeb:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
-df3fe101577de856ad8f96b14e73293309f6caeb:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:104
-df3fe101577de856ad8f96b14e73293309f6caeb:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:66
-df3fe101577de856ad8f96b14e73293309f6caeb:docs/diagrams/repo-architecture.svg:portfolio-git-workspace-path:1
+a8a3c5dafba732aa5096272da2ecf9c6d4d01786:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
+a8a3c5dafba732aa5096272da2ecf9c6d4d01786:docs/diagrams/repo-architecture.puml.svg:portfolio-git-workspace-path:1
+e9d4119dc8e3fc8bcd8184e2d1e92e479ec10ca7:docs/diagrams/repo-architecture.drawio.svg:portfolio-git-workspace-path:3
+e9d4119dc8e3fc8bcd8184e2d1e92e479ec10ca7:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:104
+e9d4119dc8e3fc8bcd8184e2d1e92e479ec10ca7:docs/diagrams/repo-architecture.drawio:portfolio-git-workspace-path:66
+e9d4119dc8e3fc8bcd8184e2d1e92e479ec10ca7:docs/diagrams/repo-architecture.svg:portfolio-git-workspace-path:1
