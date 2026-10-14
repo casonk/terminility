@@ -35,7 +35,7 @@ tags = ["local-path", "machine-specific"]
 [rules.allowlist]
 paths = [
   # The baseline file intentionally records known findings — never scan it.
-  '''\.gitleaks-baseline\.json$''',
+  '''\.gitleaksignore$''',
   '''.*\.md$''',
   '''.*\.rst$''',
   '''.*\.txt$''',
@@ -56,7 +56,7 @@ tags = ["keepass", "sensitive-config"]
 # Skip docs and baseline — flag only config, example, and env files.
 [rules.allowlist]
 paths = [
-  '''.*\.gitleaks-baseline\.json$''',
+  '''.*\.gitleaksignore$''',
   '''.*\.md$''',
   '''.*\.rst$''',
   '''.*\.txt$''',
