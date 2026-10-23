@@ -1,13 +1,13 @@
 @startuml
-title terminility Shell Script Flow
+title checkout Shell Script Flow
 left to right direction
 skinparam shadowing false
 skinparam defaultFontName Monospace
 skinparam componentStyle rectangle
 skinparam linetype ortho
 rectangle "install.sh\n0 local shell edges\n5 external tools" as shell_install_sh #DBEAFE
-rectangle "scripts/run_tachometer_profile.sh\n0 local shell edges\n3 external tools" as shell_scripts_run_tachometer_profile_sh #DBEAFE
-rectangle "sessions.sh\n0 local shell edges\n5 external tools" as shell_sessions_sh #DBEAFE
+rectangle "scripts/run_tachometer_profile.sh\n0 local shell edges\n1 external tool" as shell_scripts_run_tachometer_profile_sh #DBEAFE
+rectangle "sessions.sh\n0 local shell edges\n4 external tools" as shell_sessions_sh #DBEAFE
 rectangle "setup.sh\n0 local shell edges\n5 external tools" as shell_setup_sh #DBEAFE
 rectangle "tests/run_tests.sh\n0 local shell edges\n2 external tools" as shell_tests_run_tests_sh #DBEAFE
 cloud "apt-get" as tool_apt_get #FEF3C7
@@ -22,9 +22,6 @@ cloud "java" as tool_java #FEF3C7
 cloud "mapfile" as tool_mapfile #FEF3C7
 cloud "mkdir" as tool_mkdir #FEF3C7
 cloud "mv" as tool_mv #FEF3C7
-cloud "run" as tool_run #FEF3C7
-cloud "screen" as tool_screen #FEF3C7
-cloud "summarize" as tool_summarize #FEF3C7
 cloud "tachometer" as tool_tachometer #FEF3C7
 cloud "tmux" as tool_tmux #FEF3C7
 shell_install_sh --> tool_apt_get
@@ -32,14 +29,11 @@ shell_install_sh --> tool_cp
 shell_install_sh --> tool_git
 shell_install_sh --> tool_grep
 shell_install_sh --> tool_tmux
-shell_scripts_run_tachometer_profile_sh --> tool_run
-shell_scripts_run_tachometer_profile_sh --> tool_summarize
 shell_scripts_run_tachometer_profile_sh --> tool_tachometer
 shell_sessions_sh --> tool_declare
 shell_sessions_sh --> tool_mapfile
 shell_sessions_sh --> tool_mkdir
 shell_sessions_sh --> tool_mv
-shell_sessions_sh --> tool_screen
 shell_setup_sh --> tool_cat
 shell_setup_sh --> tool_chmod
 shell_setup_sh --> tool_curl
@@ -50,6 +44,6 @@ shell_tests_run_tests_sh --> tool_tmux
 note as shellGraphSummary
 Scanned 5 shell scripts.
 Detected 0 local shell edges.
-Detected 17 external tools.
+Detected 14 external tools.
 end note
 @enduml
