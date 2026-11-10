@@ -10,6 +10,14 @@ Mark items `[x]` when complete and move them to Done.
 
 ## Pending
 
+- [ ] [manual:2026-11-10] **Regenerate the architecture diagram PNGs** — the
+  `docs/diagrams/repo-architecture.puml.png` and `.drawio.png` renders still show
+  the old hardcoded workspace path; the sources and SVGs now say `$GIT_BASE`.
+  Run `./setup.sh` on a host with PlantUML and draw.io installed (neither is
+  present on the main workstation), then commit the refreshed images. Also check
+  `docs/contributor-architecture-blueprint.md` and the `sessions.sh` default
+  `GIT_BASE` for the same path if a portable default is wanted.
+
 - [ ] [manual:2026-10-15] **Ask GitHub Support to purge pre-rewrite commits** — this
   repository's published history was rewritten (most recently on 2026-10-15,
   to remove per-commit AI attribution trailers). GitHub keeps serving the old
