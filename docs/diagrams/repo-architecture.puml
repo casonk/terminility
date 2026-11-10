@@ -24,7 +24,7 @@ package "Layer Stack" as LAYER_PANEL #F5F5F5 {
 
   rectangle "2) Configuration Layer\n- tmux.conf  →  ~/.tmux.conf\n- 256-color + true-color, mouse, 50k history, base-index 1\n- intuitive split/nav bindings + reload key (prefix+r)\n- TPM plugins: tmux-sensible, tmux-resurrect, tmux-continuum\n- auto-save every 15 min, auto-restore on server start" as L_CONFIG #D5E8D4
 
-  rectangle "3) Session Management Layer\n- sessions.sh\n- scans GIT_BASE (default: /mnt/4tb-m2/git) for .git dirs\n- derives tmux-safe session name (/ → -, spaces/dots → -)\n- creates sessions idempotently (skips existing)\n- ensures tmux server is running before creation" as L_SESSION #D5E8D4
+  rectangle "3) Session Management Layer\n- sessions.sh\n- scans GIT_BASE (default set in sessions.sh) for .git dirs\n- derives tmux-safe session name (/ → -, spaces/dots → -)\n- creates sessions idempotently (skips existing)\n- ensures tmux server is running before creation" as L_SESSION #D5E8D4
 
   rectangle "4) Alias Layer\n- writes ~/.terminility_aliases (regenerated atomically each run)\n- one alias per session: tmux new-session -A -s <name> -c <path>\n  (-A: attach or create; -c: start in repo root)\n- install.sh adds source guard to shell RCs (idempotent)" as L_ALIAS #D5E8D4
 }
@@ -46,7 +46,7 @@ package "Runtime Artifacts (untracked)" as RUNTIME_PANEL #F5F5F5 {
 }
 
 package "External Inputs" as EXT_PANEL #F5F5F5 {
-  rectangle "/mnt/4tb-m2/git/**/.git\ngit repositories on disk\n(GIT_BASE, overridable via env)" as EXT_GIT #FFF2CC
+  rectangle "$GIT_BASE/**/.git\ngit repositories on disk\n(GIT_BASE, overridable via env)" as EXT_GIT #FFF2CC
   rectangle "System package manager\napt / dnf / pacman / brew / zypper\n(auto-detected)" as EXT_PKG #FFF2CC
   rectangle "GitHub (TPM + plugins)\ntmux-plugins/tpm\ntmux-plugins/tmux-resurrect\ntmux-plugins/tmux-continuum" as EXT_GH #FFF2CC
 }
@@ -77,7 +77,7 @@ L_ALIAS -right-> RT_RC : wires source guard
 
 legend right
   == Data Flow ==
-  /mnt/4tb-m2/git/**/.git
+  $GIT_BASE/**/.git
     → sessions.sh
     → tmux sessions (idempotent)
     → ~/.terminility_aliases
